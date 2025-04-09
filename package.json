@@ -3,17 +3,19 @@
   "version": "1.0.0",
   "description": "Yodeck Air Quality Widget",
   "type": "module",
-  "main": "index.js",
-  "scripts": {
+  "main": "index.js",  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^10.4.14",
+    "gh-pages": "^6.3.0",
     "live-server": "^1.2.2",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.7",
