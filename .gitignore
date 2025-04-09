@@ -20,3 +20,6 @@ dist/
 .env.production
 .env*
 !.env.example
+
+notes.txt
+prompts/
