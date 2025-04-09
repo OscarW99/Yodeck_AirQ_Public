@@ -1,0 +1,22 @@
+# Project specific
+notes.txt
+./prompts
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env*
+!.env.example
