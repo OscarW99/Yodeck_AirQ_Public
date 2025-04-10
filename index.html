@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Dashboard</title>
+    <link href="dist/output.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-900">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-slate-800 rounded-xl p-8 w-full max-w-sm mx-auto shadow-2xl border border-slate-700/50">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-white">Welcome Back</h2>
+                <p class="text-slate-400 text-sm mt-1">Sign in to manage your air quality monitors</p>
+            </div>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Email</label>
+                    <input type="email" id="loginEmail" required 
+                           class="w-full px-3 py-2 rounded bg-slate-700/50 border border-slate-600 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                           placeholder="Enter your email">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Password</label>
+                    <input type="password" id="loginPassword" required
+                           class="w-full px-3 py-2 rounded bg-slate-700/50 border border-slate-600 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                           placeholder="Enter your password">
+                </div>
+                <div id="loginError" class="text-red-400 text-sm text-center hidden"></div>
+                <button type="submit" 
+                        class="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm transition-colors font-medium">
+                    Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="hidden">
+        <div id="themeContainer" class="min-h-screen font-['Inter'] transition-all duration-300 bg-gradient-to-br from-slate-900 to-slate-800">
+            <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+                <!-- Header with controls -->
+                <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-white/90">Air Quality Dashboard</h1>
+                        <p class="mt-1 text-slate-400">Monitor and manage your air quality sensors</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="showAddRoomModal()" 
+                                class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm transition-colors">
+                            Add Room
+                        </button>
+                        <button onclick="handleLogout()" 
+                                class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm transition-colors">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                    <div class="rounded-lg p-4 transition-colors bg-white/5">
+                        <h3 class="text-sm transition-colors text-slate-400">Total Rooms</h3>
+                        <p id="totalRooms" class="text-2xl font-bold mt-1 transition-colors text-white">1</p>
+                    </div>
+                    <div class="rounded-lg p-4 transition-colors bg-white/5">
+                        <h3 class="text-sm transition-colors text-slate-400">Rooms Online</h3>
+                        <p id="onlineRooms" class="text-2xl font-bold mt-1 transition-colors text-white">1</p>
+                    </div>
+                    <div class="rounded-lg p-4 transition-colors bg-white/5">
+                        <h3 class="text-sm transition-colors text-slate-400">Last Update</h3>
+                        <div class="mt-1">
+                            <p id="lastUpdateDate" class="text-lg font-medium text-slate-300"></p>
+                            <p id="lastUpdateTime" class="text-xl font-bold text-white"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rooms Grid -->
+                <div id="roomsGrid" class="grid gap-6">
+                    <!-- Room cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Room Modal -->
+    <div id="addRoomModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div class="bg-slate-800 rounded-xl p-6 max-w-md w-full mx-auto shadow-xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-white">Add New Room</h2>
+                <button onclick="hideAddRoomModal()" class="text-slate-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <form onsubmit="handleAddRoom(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Room Name</label>
+                    <input type="text" id="roomName" required 
+                           class="w-full px-3 py-2 rounded bg-slate-700 border border-slate-600 text-white text-sm"
+                           placeholder="e.g., Main Office">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Device ID</label>
+                    <input type="text" id="deviceId" required
+                           class="w-full px-3 py-2 rounded bg-slate-700 border border-slate-600 text-white text-sm"
+                           placeholder="e.g., 24587C53B584">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Template Style</label>
+                    <select id="templateStyle" required
+                            class="w-full px-3 py-2 rounded bg-slate-700 border border-slate-600 text-white text-sm">
+                        <option value="default">Default (Dark)</option>
+                        <option value="glass">Glass Morphism</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="hideAddRoomModal()" 
+                            class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded text-sm">
+                        Cancel
+                    </button>
+                    <button type="submit" id="roomSubmitButton"
+                            class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm">
+                        Add Room
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { loginUser, logoutUser, saveRoom, getRooms, deleteRoom, onAuthStateChange } from './js/firebase-config.js';
+
+        // Authentication state management
+        let currentUser = null;
+        let rooms = [];
+
+        // Theme configurations
+        const themeConfigs = {
+            dark: {
+                container: 'bg-gradient-to-br from-slate-900 to-slate-800',
+                text: 'text-white',
+                subtext: 'text-slate-400',
+                card: 'bg-white/5 backdrop-blur-sm',
+                select: 'bg-slate-700 border-slate-600 text-white',
+                stats: 'bg-white/5',
+                button: 'bg-blue-500 hover:bg-blue-600 text-white',
+                header: 'text-white/90',
+                description: 'text-slate-400'
+            }
+        };
+
+        let currentTheme = 'dark';        // Authentication state observer
+        onAuthStateChange((user) => {
+            console.log('Auth state changed:', user);
+            currentUser = user;
+            if (!user) {
+                rooms = [];
+            }
+        });
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorElement = document.getElementById('loginError');
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const loginScreen = document.getElementById('loginScreen');
+            const dashboard = document.getElementById('dashboard');
+            
+            try {
+                console.log('Attempting login...');
+                // Disable the submit button and show loading state
+                submitButton.disabled = true;
+                submitButton.textContent = 'Signing in...';
+                errorElement.classList.add('hidden');
+                
+                const result = await loginUser(email, password);
+                console.log('Login result:', result);
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Login failed');
+                }
+                
+                // Load rooms first
+                await loadRooms();
+                
+                // Then update UI
+                loginScreen.style.display = 'none';
+                dashboard.style.display = 'block';
+                dashboard.classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                errorElement.textContent = error.message;
+                errorElement.classList.remove('hidden');
+            } finally {
+                // Re-enable the submit button and restore text
+                submitButton.disabled = false;
+                submitButton.textContent = 'Sign In';
+            }
+        });        // Expose logout handler to window
+        window.handleLogout = async () => {
+            try {
+                await logoutUser();
+                // Redirect to login page or update UI after successful logout
+                window.location.reload();
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        };
+
+        // Room management
+        async function loadRooms() {
+            try {
+                console.log('Loading rooms...');
+                const result = await getRooms();
+                console.log('Rooms result:', result);
+                
+                if (result.success) {
+                    rooms = result.rooms || [];
+                    renderRooms();
+                    updateStats();
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Error loading rooms:', error);
+            }
+        }
+
+        // Expose room management functions to window
+        window.showAddRoomModal = () => {
+            document.getElementById('addRoomModal').classList.remove('hidden');
+            document.getElementById('addRoomModal').classList.add('flex');
+        };
+
+        window.hideAddRoomModal = () => {
+            document.getElementById('addRoomModal').classList.remove('flex');
+            document.getElementById('addRoomModal').classList.add('hidden');
+        };
+
+        window.handleAddRoom = async (event) => {
+            event.preventDefault();
+            
+            const name = document.getElementById('roomName').value;
+            const deviceId = document.getElementById('deviceId').value;
+            const templateStyle = document.getElementById('templateStyle').value;
+            
+            const newRoom = {
+                id: deviceId,
+                name: name,
+                templateStyle: templateStyle,
+                apiUrl: `https://ezdata2.m5stack.com/api/v2/${deviceId}/dataMacByKey/raw`
+            };
+            
+            try {
+                const result = await saveRoom(newRoom);
+                if (result.success) {
+                    await loadRooms();
+                    hideAddRoomModal();
+                    event.target.reset();
+                }
+            } catch (error) {
+                console.error('Error adding room:', error);
+            }
+        };
+
+        window.editRoom = (roomId) => {
+            const room = rooms.find(r => r.id === roomId);
+            if (!room) return;
+            
+            document.getElementById('roomName').value = room.name;
+            document.getElementById('deviceId').value = room.id;
+            document.getElementById('templateStyle').value = room.templateStyle || 'default';
+            
+            const form = document.querySelector('#addRoomModal form');
+            form.onsubmit = (e) => handleEditRoom(e, roomId);
+            
+            document.querySelector('#addRoomModal h2').textContent = 'Edit Room';
+            document.getElementById('roomSubmitButton').textContent = 'Update';
+            showAddRoomModal();
+        };
+
+        window.handleEditRoom = async (event, roomId) => {
+            event.preventDefault();
+            
+            const name = document.getElementById('roomName').value;
+            const deviceId = document.getElementById('deviceId').value;
+            const templateStyle = document.getElementById('templateStyle').value;
+            
+            const updatedRoom = {
+                id: deviceId,
+                name: name,
+                templateStyle: templateStyle,
+                apiUrl: `https://ezdata2.m5stack.com/api/v2/${deviceId}/dataMacByKey/raw`
+            };
+            
+            try {
+                const result = await saveRoom(updatedRoom);
+                if (result.success) {
+                    await loadRooms();
+                    hideAddRoomModal();
+                    event.target.reset();
+                    event.target.onsubmit = handleAddRoom;
+                    document.querySelector('#addRoomModal h2').textContent = 'Add New Room';
+                    document.getElementById('roomSubmitButton').textContent = 'Add Room';
+                }
+            } catch (error) {
+                console.error('Error updating room:', error);
+            }
+        };
+
+        window.deleteRoom = async (roomId) => {
+            if (!confirm('Are you sure you want to delete this room?')) return;
+            
+            try {
+                const result = await deleteRoom(roomId);
+                if (result.success) {
+                    await loadRooms();
+                }
+            } catch (error) {
+                console.error('Error deleting room:', error);
+            }
+        };
+
+        // Room rendering and data functions
+        function renderRooms() {
+            const grid = document.getElementById('roomsGrid');
+            grid.innerHTML = '';
+            rooms.forEach(room => {
+                grid.appendChild(renderRoomCard(room));
+                updateRoomStatus(room.id);
+            });
+        }
+
+        function renderRoomCard(room) {
+            const card = document.createElement('div');
+            card.className = `${themeConfigs[currentTheme].card} rounded-xl p-6`;
+            card.innerHTML = `
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-1">
+                            <h2 class="text-xl font-bold ${themeConfigs[currentTheme].text}">${room.name}</h2>
+                            <span id="status-${room.id}" class="px-2 py-0.5 text-xs rounded-full bg-slate-500/20 text-slate-300">Checking...</span>
+                        </div>
+                        <p class="${themeConfigs[currentTheme].subtext} text-sm">Device ID: ${room.id}</p>
+                        <a href="https://airq.m5stack.com/${room.id}" 
+                           target="_blank" 
+                           class="text-blue-400 hover:text-blue-300 text-sm mt-1 inline-block transition-colors">
+                            View Original Dashboard →
+                        </a>
+                    </div>
+                    <div class="flex gap-3">
+                        <a href="./templates/room.html?deviceId=${room.id}&name=${encodeURIComponent(room.name)}&templateStyle=${room.templateStyle}" 
+                           target="_blank" 
+                           class="${themeConfigs[currentTheme].button} px-4 py-2 rounded-lg text-sm transition-colors">
+                            View Widget
+                        </a>
+                        <button onclick="editRoom('${room.id}')" 
+                                class="px-4 py-2 bg-slate-500/20 hover:bg-slate-500/30 text-slate-300 rounded-lg text-sm transition-colors">
+                            Edit
+                        </button>
+                        <button onclick="deleteRoom('${room.id}')" 
+                                class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg text-sm transition-colors">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        async function updateRoomStatus(roomId) {
+            const statusEl = document.getElementById(`status-${roomId}`);
+            try {
+                const room = rooms.find(r => r.id === roomId);
+                const response = await fetch(room.apiUrl);
+                const json = await response.json();
+                
+                if (!json || json.code !== 200 || !json.data) {
+                    throw new Error('Invalid response format');
+                }
+
+                const updateTime = parseInt(json.data.updateTime);
+                const currentTime = Math.floor(Date.now() / 1000); // Convert to seconds
+                const timeDiff = currentTime - updateTime;
+
+                // Define status thresholds
+                const ONLINE_THRESHOLD = 90; // 1.5 minutes
+                const STALE_THRESHOLD = 300; // 5 minutes
+
+                if (timeDiff <= ONLINE_THRESHOLD) {
+                    statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-300';
+                    statusEl.textContent = 'Online';
+                } else if (timeDiff <= STALE_THRESHOLD) {
+                    statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-amber-500/20 text-amber-300';
+                    statusEl.textContent = 'Stale';
+                } else {
+                    statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';
+                    statusEl.textContent = 'Offline';
+                }
+            } catch (error) {
+                statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';
+                statusEl.textContent = error.message === 'Invalid response format' ? 'Invalid Response' : 'No Connection';
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalRooms').textContent = rooms.length;
+            const now = new Date();
+            
+            // Format date as DD/MM/YYYY
+            const dateStr = now.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            // Format time as HH:MM:SS
+            const timeStr = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+            
+            document.getElementById('lastUpdateDate').textContent = dateStr;
+            document.getElementById('lastUpdateTime').textContent = timeStr;
+        }
+
+        // Auto-refresh rooms status every 30 seconds
+        setInterval(() => {
+            if (currentUser) {
+                rooms.forEach(room => updateRoomStatus(room.id));
+                updateStats();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
