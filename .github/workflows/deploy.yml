@@ -17,17 +17,17 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node.js 🔧
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'npm'
-
-      - name: Install Dependencies 📦
-        run: npm ci      - name: Build 🏗️
+          cache: 'npm'      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Build
         run: npm run build
         env:
           # Add all your Firebase environment variables here
@@ -40,7 +40,7 @@ jobs:
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
           # Add any other environment variables your app needs
           
-      - name: Deploy to GitHub Pages 🚀
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist # The folder the action should deploy
