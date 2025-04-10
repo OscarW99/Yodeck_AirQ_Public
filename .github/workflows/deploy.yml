@@ -2,10 +2,10 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - main  # Set this to your default branch
+      - master  # Set this to your default branch
   pull_request:
     branches:
-      - main  # Build on PRs to main branch
+      - master  # Build on PRs to master branch
   schedule:
     - cron: '0 0 * * 0'  # Run weekly on Sundays at midnight
   workflow_dispatch:  # Allows manual triggering
