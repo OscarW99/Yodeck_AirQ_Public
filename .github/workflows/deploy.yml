@@ -1,0 +1,49 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - main  # Set this to your default branch
+  pull_request:
+    branches:
+      - main  # Build on PRs to main branch
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sundays at midnight
+  workflow_dispatch:  # Allows manual triggering
+
+permissions:
+  contents: write  # Required for pushing to gh-pages branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js 🔧
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Dependencies 📦
+        run: npm ci
+
+      - name: Build 🏗️
+        run: npm run build
+        env:
+          # Add all your Firebase environment variables here
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_DATABASE_URL: ${{ secrets.VITE_FIREBASE_DATABASE_URL }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          # Add any other environment variables your app needs
+
+      - name: Deploy to GitHub Pages 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist # The folder the action should deploy
+          branch: gh-pages # The branch the action should deploy to
