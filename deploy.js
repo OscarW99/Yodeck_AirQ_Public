@@ -49,6 +49,9 @@ try {
   fs.rmSync(tempDir, { recursive: true, force: true });
   console.log('Done!');
 } catch (error) {
-  console.error('Deployment failed:', error.message);
+  console.error('Deployment failed:', error);
+  if (fs.existsSync(tempDir)) {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
   process.exit(1);
 }
