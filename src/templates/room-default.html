@@ -20,10 +20,48 @@
             </div>
             <div id="airQualityData" class="space-y-6">
                 <!-- Air quality data will be populated by JavaScript -->
-            </div>
-        </div>    </div>    
-    <script src="../js/security-utils-global.js"></script>
+            </div>        </div>    </div>    
     <script>
+    // Inline security utilities to avoid external file dependencies
+    window.SecurityUtils = {
+      // Validates a device ID to ensure it follows the expected format
+      validateDeviceId: function(deviceId) {
+        console.log('Validating device ID:', deviceId);
+        if (!deviceId) {
+          console.log('Device ID is empty or null');
+          return false;
+        }
+        return true;
+      },
+
+      // Sanitizes text to prevent XSS attacks
+      sanitizeText: function(text) {
+        if (!text) return '';
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      },
+
+      // Validates and sanitizes URL parameters
+      validateAndSanitizeParams: function(params) {
+        const deviceId = params.get('deviceId');
+        const roomName = params.get('name') || 'Room';
+        
+        if (!this.validateDeviceId(deviceId)) {
+          throw new Error('Invalid Device ID');
+        }
+        
+        return {
+          deviceId: deviceId,
+          name: this.sanitizeText(roomName),
+          apiUrl: `https://us-central1-yodeck-airq.cloudfunctions.net/app/api/devices/${deviceId}`
+        };
+      }
+    };
+    
     try {
         const params = new URLSearchParams(window.location.search);
         // Store in global variables for room.js
