@@ -32,8 +32,7 @@ export function sanitizeText(text) {
   
   // Create a temporary div element
   const temp = document.createElement('div');
-  
-  // Set its text content (not innerHTML) which encodes HTML entities
+    // Set its text content (not innerHTML) which encodes HTML entities
   temp.textContent = text;
   
   // Return the encoded string
@@ -56,7 +55,7 @@ export function validateAndSanitizeParams(params) {
   }
   
   return {
-    id: deviceId,
+    deviceId: deviceId, // Changed from 'id' to 'deviceId' to match what room.js expects
     name: sanitizeText(name),
     apiUrl: `https://ezdata2.m5stack.com/api/v2/${deviceId}/dataMacByKey/raw`
   };

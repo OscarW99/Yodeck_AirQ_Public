@@ -7,21 +7,17 @@
     <script>
         // Get room configuration from URL parameters
         const params = new URLSearchParams(window.location.search);
-        const template = params.get('templateStyle') || 'default';
         
-        // Map template names to file paths - explicitly use relative paths that work with GitHub Pages
-        const templateFiles = {
-            'default': './room-default.html',
-            'glass': './room-glass.html'
-        };
-        
-        // Redirect to the appropriate template while preserving all URL parameters
-        const selectedTemplate = templateFiles[template] || templateFiles.default;
-        
-        // Create the full URL that works in both local development and GitHub Pages
-        window.location.href = selectedTemplate + window.location.search;
+        // Use the standalone template that works reliably on GitHub Pages
+        window.location.href = './room-standalone.html' + window.location.search;
     </script>
 </head>
+<body>
+    <div class="flex items-center justify-center min-h-screen bg-slate-900 text-white">
+        <p>Loading template...</p>
+    </div>
+</body>
+</html>
 <body>
     <div class="flex items-center justify-center min-h-screen bg-slate-900 text-white">
         <p>Loading template...</p>

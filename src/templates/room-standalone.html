@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Monitor</title>
+    <!-- Include main CSS directly -->
+    <link href="../css/main.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="transition-colors duration-300">
+    <div id="themeContainer" class="bg-gradient-to-br from-slate-900 to-slate-800 min-h-screen font-['Inter']">
+        <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+            <div class="flex items-center gap-3 mb-8">
+                <h1 id="roomTitle" class="text-3xl font-bold text-white/90"></h1>
+                <span id="roomStatus" class="px-2 py-0.5 text-xs rounded-full bg-slate-500/20 text-slate-300">Checking...</span>
+            </div>
+            <div id="airQualityData" class="space-y-6">
+                <!-- Air quality data will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- All JavaScript in one file to avoid import issues -->
+    <script>
+    // Initialize configuration from URL parameters
+    function initConfig() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const deviceId = params.get('deviceId');
+            const roomName = params.get('name') || 'Room';
+            
+            // Validate device ID
+            if (!deviceId) {
+                throw new Error('No device ID provided');
+            }
+            
+            // Set up global configuration
+            window.DEVICE_CONFIG = {
+                deviceId: deviceId,
+                name: roomName,
+                apiUrl: `https://us-central1-yodeck-airq.cloudfunctions.net/app/api/devices/${deviceId}`
+            };
+            
+            // Set up theme configuration
+            window.themeConfig = {
+                background: 'from-slate-900 to-slate-800',
+                metrics: {
+                    humidity: { bg: 'from-cyan-500/10 to-blue-500/10', text: 'text-cyan-300' },
+                    pm: { bg: 'from-violet-500/10 to-purple-500/10', text: 'text-violet-300' },
+                    voc: { bg: 'from-emerald-500/10 to-green-500/10', text: 'text-emerald-300' },
+                    nox: { bg: 'from-amber-500/10 to-yellow-500/10', text: 'text-amber-300' },
+                    co2: { bg: 'from-rose-500/10 to-red-500/10', text: 'text-rose-300' }
+                },
+                values: 'text-white'
+            };
+            
+            // Update page title and heading
+            document.getElementById('roomTitle').textContent = DEVICE_CONFIG.name + ' Air Quality';
+            document.title = DEVICE_CONFIG.name + ' - Air Quality';
+            
+            return true;
+        } catch (error) {
+            console.error('Configuration error:', error.message);
+            document.getElementById('roomTitle').textContent = 'Error: Invalid Configuration';
+            document.getElementById('roomStatus').textContent = 'Error';
+            document.getElementById('roomStatus').className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';
+            return false;
+        }
+    }
+    
+    // Initialize room data display
+    function initializeRoom(deviceConfig, themeConfig) {
+        console.log('Initializing room with device config:', deviceConfig);
+        
+        // Fetch and display air quality data
+        async function fetchAndDisplayData() {
+            try {
+                console.log('Fetching from:', deviceConfig.apiUrl);
+                const response = await fetch(deviceConfig.apiUrl);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const jsonData = await response.json();
+                console.log('Response data:', jsonData);
+                
+                if (!jsonData || jsonData.code !== 200 || !jsonData.data || !jsonData.data.value) {
+                    throw new Error('Invalid data format');
+                }
+                
+                // Update status with last update time
+                updateRoomStatus(jsonData.data.updateTime);
+                
+                // Parse and display the data
+                const unescapedValue = jsonData.data.value.replace(/\\/g, '');
+                const data = JSON.parse(unescapedValue);
+                
+                const container = document.getElementById('airQualityData');
+                container.innerHTML = displayMetricsHtml(data, themeConfig);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('airQualityData').innerHTML = `
+                    <div class="text-red-400 p-4 rounded-lg bg-red-500/10">
+                        ${error.message === 'Invalid data format' ? 'Error: Invalid response from device' : 'Error: Unable to connect to device'}
+                    </div>
+                `;
+                document.getElementById('roomStatus').textContent = 'Error';
+                document.getElementById('roomStatus').className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';
+            }
+        }
+        
+        // Update room status with timestamp
+        function updateRoomStatus(timestamp) {
+            try {
+                const statusEl = document.getElementById('roomStatus');
+                if (!timestamp) {
+                    statusEl.textContent = 'Unknown';
+                    return;
+                }
+                
+                // Convert timestamp to date
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diffMinutes = Math.floor((now - date) / (1000 * 60));
+                
+                // Format the status based on how recent the data is
+                if (diffMinutes < 5) {
+                    statusEl.textContent = 'Live';
+                    statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-emerald-500/20 text-emerald-300';
+                } else if (diffMinutes < 60) {
+                    statusEl.textContent = `${diffMinutes}m ago`;
+                    statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-blue-500/20 text-blue-300';
+                } else if (diffMinutes < 1440) {
+                    const hours = Math.floor(diffMinutes / 60);
+                    statusEl.textContent = `${hours}h ago`;
+                    statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-amber-500/20 text-amber-300';
+                } else {
+                    const days = Math.floor(diffMinutes / 1440);
+                    statusEl.textContent = `${days}d ago`;
+                    statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';
+                }
+            } catch (e) {
+                console.error('Error updating status:', e);
+            }
+        }
+        
+        // Generate HTML for displaying metrics
+        function displayMetricsHtml(data, themeConfig) {
+            console.log('Generating metrics HTML with data:', data);
+            
+            const metrics = [
+                {
+                    id: 'humidity',
+                    name: 'Humidity',
+                    value: data.humidity ? data.humidity.toFixed(1) + '%' : 'N/A',
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    </svg>`
+                },
+                {
+                    id: 'pm',
+                    name: 'PM2.5',
+                    value: data.pm25 ? data.pm25.toFixed(1) + ' μg/m³' : 'N/A',
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>`
+                },
+                {
+                    id: 'voc',
+                    name: 'VOC',
+                    value: data.voc ? data.voc.toFixed(1) + ' ppb' : 'N/A',
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>`
+                },
+                {
+                    id: 'nox',
+                    name: 'NOx',
+                    value: data.nox ? data.nox.toFixed(1) + ' ppb' : 'N/A',
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>`
+                },
+                {
+                    id: 'co2',
+                    name: 'CO₂',
+                    value: data.co2 ? data.co2.toFixed(1) + ' ppm' : 'N/A',
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                    </svg>`
+                }
+            ];
+            
+            let html = '';
+            
+            for (const metric of metrics) {
+                const theme = themeConfig.metrics[metric.id] || { 
+                    bg: 'from-gray-500/10 to-gray-500/10', 
+                    text: 'text-gray-300' 
+                };
+                
+                html += `
+                <div class="rounded-xl p-6 bg-gradient-to-br ${theme.bg}">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="${theme.text}">
+                                ${metric.icon}
+                            </div>
+                            <h2 class="text-lg font-medium ${theme.text}">${metric.name}</h2>
+                        </div>
+                        <div class="metric-value ${themeConfig.values} text-2xl font-bold">
+                            ${metric.value}
+                        </div>
+                    </div>
+                </div>`;
+            }
+            
+            return html;
+        }
+        
+        // Start the data fetch process
+        fetchAndDisplayData();
+        
+        // Set up a refresh interval (every 5 minutes)
+        setInterval(fetchAndDisplayData, 300000);
+    }
+    
+    // Start the application
+    window.addEventListener('DOMContentLoaded', function() {
+        if (initConfig()) {
+            // If configuration succeeded, initialize the room
+            initializeRoom(window.DEVICE_CONFIG, window.themeConfig);
+        }
+    });
+    </script>
+</body>
+</html>
