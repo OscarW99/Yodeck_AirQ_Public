@@ -12,6 +12,8 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'src/index.html'),
         room: resolve(__dirname, 'src/templates/room.html'),
+        roomDefault: resolve(__dirname, 'src/templates/room-default.html'),
+        roomGlass: resolve(__dirname, 'src/templates/room-glass.html')
       }
     }
   },

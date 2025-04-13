@@ -4,8 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Air Quality Monitor</title>
-    <script type="module" src="../js/loadTemplate.js"></script>
-    <link rel="stylesheet" href="../css/main.css">
+    <script>
+        // Get room configuration from URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const template = params.get('templateStyle') || 'default';
+        
+        // Map template names to file paths - explicitly use relative paths that work with GitHub Pages
+        const templateFiles = {
+            'default': './room-default.html',
+            'glass': './room-glass.html'
+        };
+        
+        // Redirect to the appropriate template while preserving all URL parameters
+        const selectedTemplate = templateFiles[template] || templateFiles.default;
+        
+        // Create the full URL that works in both local development and GitHub Pages
+        window.location.href = selectedTemplate + window.location.search;
+    </script>
 </head>
 <body>
     <div class="flex items-center justify-center min-h-screen bg-slate-900 text-white">
