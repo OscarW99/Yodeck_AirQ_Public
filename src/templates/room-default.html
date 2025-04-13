@@ -21,14 +21,13 @@
             <div id="airQualityData" class="space-y-6">
                 <!-- Air quality data will be populated by JavaScript -->
             </div>
-        </div>
-    </div>    <script type="module">
-    import { validateAndSanitizeParams, sanitizeText } from '../js/security-utils.js';
-    
+        </div>    </div>    
+    <script src="../js/security-utils-global.js"></script>
+    <script>
     try {
         const params = new URLSearchParams(window.location.search);
         // Store in global variables for room.js
-        window.DEVICE_CONFIG = validateAndSanitizeParams(params);
+        window.DEVICE_CONFIG = window.SecurityUtils.validateAndSanitizeParams(params);
         
         window.themeConfig = {
             background: 'from-slate-900 to-slate-800',

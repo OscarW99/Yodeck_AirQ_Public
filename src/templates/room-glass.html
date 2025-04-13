@@ -67,17 +67,12 @@
             <div id="airQualityData" class="space-y-6">
                 <!-- Air quality data will be populated by JavaScript -->
             </div>
-        </div>
-    </div>    
+        </div>    </div>    
+    <script src="../js/security-utils-global.js"></script>
     <script>
-    var DEVICE_CONFIG;
-    </script>
-    <script type="module">
-    import { validateAndSanitizeParams, sanitizeText } from '../js/security-utils.js';
-    
     try {
         const params = new URLSearchParams(window.location.search);
-        window.DEVICE_CONFIG = validateAndSanitizeParams(params);
+        window.DEVICE_CONFIG = window.SecurityUtils.validateAndSanitizeParams(params);
         
         document.getElementById('roomTitle').textContent = DEVICE_CONFIG.name + ' Air Quality';
         document.title = DEVICE_CONFIG.name + ' - Air Quality';
@@ -87,7 +82,7 @@
         document.getElementById('roomStatus').textContent = 'Error';
         document.getElementById('roomStatus').className = 'px-3 py-1 text-xs font-semibold rounded-full bg-red-500/30 text-white';
         
-        document.getElementById('airQualityData').innerHTML = sanitizeText(`
+        document.getElementById('airQualityData').innerHTML = window.SecurityUtils.sanitizeText(`
             <div class="text-black/80 p-6 rounded-xl glass">
                 Error: Invalid device configuration. Please check the URL parameters.
             </div>
