@@ -3,6 +3,8 @@ import { resolve } from 'path';
 
 export default defineConfig({
   root: 'src',
+  // This base path is correct for GitHub Pages deployment
+  // It adds the repo name prefix to all asset URLs in production
   base: process.env.NODE_ENV === 'production' ? '/temp-yodeck-airq/' : '/',
   envDir: '../', // Look for .env files in the project root, one level up from src
   build: {
@@ -16,11 +18,10 @@ export default defineConfig({
         roomGlass: resolve(__dirname, 'src/templates/room-glass.html')
       },
       output: {
-        // Make CSS output more predictable by not hashing in production
+        // Improve CSS output path to ensure it's accessible
         assetFileNames: (assetInfo) => {
           if (assetInfo.name.endsWith('.css')) {
-            // Ensure CSS files are output with consistent naming
-            return 'dist/output.css';
+            return 'styles/style.css'; // Simpler, more consistent CSS path
           }
           return 'assets/[name]-[hash][extname]';
         },
