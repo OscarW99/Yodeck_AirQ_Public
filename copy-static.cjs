@@ -28,10 +28,13 @@ for (const file of ['index.html', 'index-simple.html', 'simplest-room.html']) {
   if (fs.existsSync(file)) fs.copyFileSync(file, path.join(DIST, file));
 }
 
-// Copy src/index.html
+// Copy src/index.html as the main index.html in dist (for GitHub Pages root)
 if (fs.existsSync(path.join(SRC, 'index.html'))) {
-  fs.copyFileSync(path.join(SRC, 'index.html'), path.join(DIST, 'src-index.html'));
+  fs.copyFileSync(path.join(SRC, 'index.html'), path.join(DIST, 'index.html'));
 }
+
+// Optionally, you can still copy it as src-index.html if you want a backup/reference
+// fs.copyFileSync(path.join(SRC, 'index.html'), path.join(DIST, 'src-index.html'));
 
 // Copy src/js, src/templates, and src/pages
 for (const folder of ['js', 'templates', 'pages']) {
