@@ -5,7 +5,9 @@
 <title>Air Quality Dashboard</title>
 <!-- Include production configuration for Firebase (ignored in development) -->
 <script src="./js/prod-config.js" type="module"></script>
-<!-- Update CSS path to use the file imported by main.js -->
+<!-- Directly include the CSS file that's being generated in the gh-pages branch -->
+<link rel="stylesheet" href="./styles/style.css">
+<!-- Keep the main.js import for JavaScript functionality -->
 <script type="module" src="./main.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -179,272 +181,270 @@ const dashboard = document.getElementById('dashboard');
 
 try {
 console.log('Attempting login...');
-                // Disable the submit button and show loading state
-                submitButton.disabled = true;
-                submitButton.textContent = 'Signing in...';
-                errorElement.classList.add('hidden');
-                
-                const result = await loginUser(email, password);
-                console.log('Login result:', result);
-                
-                if (!result.success) {
-                    throw new Error(result.error || 'Login failed');
-                }
-                
-                // Load rooms first
-                await loadRooms();
-                
-                // Then update UI
-                loginScreen.style.display = 'none';
-                dashboard.style.display = 'block';
-                dashboard.classList.remove('hidden');
-                
-            } catch (error) {
-                console.error('Login error:', error);
-                errorElement.textContent = error.message;
-                errorElement.classList.remove('hidden');
-            } finally {
-                // Re-enable the submit button and restore text
-                submitButton.disabled = false;
-                submitButton.textContent = 'Sign In';
-            }
-        });        // Expose logout handler to window
-        window.handleLogout = async () => {
-            try {
-                await logoutUser();
-                // Redirect to login page or update UI after successful logout
-                window.location.reload();
-            } catch (error) {
-                console.error('Logout error:', error);
-            }
-        };
+// Disable the submit button and show loading state
+submitButton.disabled = true;
+submitButton.textContent = 'Signing in...';
+errorElement.classList.add('hidden');
 
-        // Room management
-        async function loadRooms() {
-            try {
-                console.log('Loading rooms...');
-                const result = await getRooms();
-                console.log('Rooms result:', result);
-                
-                if (result.success) {
-                    rooms = result.rooms || [];
-                    renderRooms();
-                    updateStats();
-                } else {
-                    throw new Error(result.error);
-                }
-            } catch (error) {
-                console.error('Error loading rooms:', error);
-            }
-        }
+const result = await loginUser(email, password);
+console.log('Login result:', result);
 
-        // Expose room management functions to window
-        window.showAddRoomModal = () => {
-            document.getElementById('addRoomModal').classList.remove('hidden');
-            document.getElementById('addRoomModal').classList.add('flex');
-        };
+if (!result.success) {
+throw new Error(result.error || 'Login failed');
+}
 
-        window.hideAddRoomModal = () => {
-            document.getElementById('addRoomModal').classList.remove('flex');
-            document.getElementById('addRoomModal').classList.add('hidden');
-        };
+await loadRooms();
 
-        window.handleAddRoom = async (event) => {
-            event.preventDefault();
-            
-            const name = document.getElementById('roomName').value;
-            const deviceId = document.getElementById('deviceId').value;
-            const templateStyle = document.getElementById('templateStyle').value;
-            
-            const newRoom = {
-                id: deviceId,
-                name: name,
-                templateStyle: templateStyle,
-                apiUrl: `https://ezdata2.m5stack.com/api/v2/${deviceId}/dataMacByKey/raw`
-            };
-            
-            try {
-                const result = await saveRoom(newRoom);
-                if (result.success) {
-                    await loadRooms();
-                    hideAddRoomModal();
-                    event.target.reset();
-                }
-            } catch (error) {
-                console.error('Error adding room:', error);
-            }
-        };
+loginScreen.style.display = 'none';
+dashboard.style.display = 'block';
+dashboard.classList.remove('hidden');
 
-        window.editRoom = (roomId) => {
-            const room = rooms.find(r => r.id === roomId);
-            if (!room) return;
-            
-            document.getElementById('roomName').value = room.name;
-            document.getElementById('deviceId').value = room.id;
-            document.getElementById('templateStyle').value = room.templateStyle || 'default';
-            
-            const form = document.querySelector('#addRoomModal form');
-            form.onsubmit = (e) => handleEditRoom(e, roomId);
-            
-            document.querySelector('#addRoomModal h2').textContent = 'Edit Room';
-            document.getElementById('roomSubmitButton').textContent = 'Update';
-            showAddRoomModal();
-        };
+} catch (error) {
+console.error('Login error:', error);
+errorElement.textContent = error.message;
+errorElement.classList.remove('hidden');
+} finally {
+// Re-enable the submit button and restore text
+submitButton.disabled = false;
+submitButton.textContent = 'Sign In';
+}
+});        // Expose logout handler to window
+window.handleLogout = async () => {
+try {
+await logoutUser();
+// Redirect to login page or update UI after successful logout
+window.location.reload();
+} catch (error) {
+console.error('Logout error:', error);
+}
+};
 
-        window.handleEditRoom = async (event, roomId) => {
-            event.preventDefault();
-            
-            const name = document.getElementById('roomName').value;
-            const deviceId = document.getElementById('deviceId').value;
-            const templateStyle = document.getElementById('templateStyle').value;
-            
-            const updatedRoom = {
-                id: deviceId,
-                name: name,
-                templateStyle: templateStyle,
-                apiUrl: `https://ezdata2.m5stack.com/api/v2/${deviceId}/dataMacByKey/raw`
-            };
-            
-            try {
-                const result = await saveRoom(updatedRoom);
-                if (result.success) {
-                    await loadRooms();
-                    hideAddRoomModal();
-                    event.target.reset();
-                    event.target.onsubmit = handleAddRoom;
-                    document.querySelector('#addRoomModal h2').textContent = 'Add New Room';
-                    document.getElementById('roomSubmitButton').textContent = 'Add Room';
-                }
-            } catch (error) {
-                console.error('Error updating room:', error);
-            }
-        };
+// Room management
+async function loadRooms() {
+try {
+console.log('Loading rooms...');
+const result = await getRooms();
+console.log('Rooms result:', result);
 
-        window.deleteRoom = async (roomId) => {
-            if (!confirm('Are you sure you want to delete this room?')) return;
-            
-            try {
-                const result = await deleteRoom(roomId);
-                if (result.success) {
-                    await loadRooms();
-                }
-            } catch (error) {
-                console.error('Error deleting room:', error);
-            }
-        };
+if (result.success) {
+rooms = result.rooms || [];
+renderRooms();
+updateStats();
+} else {
+throw new Error(result.error);
+}
+} catch (error) {
+console.error('Error loading rooms:', error);
+}
+}
 
-        // Room rendering and data functions
-        function renderRooms() {
-            const grid = document.getElementById('roomsGrid');
-            grid.innerHTML = '';
-            rooms.forEach(room => {
-                grid.appendChild(renderRoomCard(room));
-                updateRoomStatus(room.id);
-            });
-        }
+// Expose room management functions to window
+window.showAddRoomModal = () => {
+document.getElementById('addRoomModal').classList.remove('hidden');
+document.getElementById('addRoomModal').classList.add('flex');
+};
 
-        function renderRoomCard(room) {
-            const card = document.createElement('div');
-            card.className = `${themeConfigs[currentTheme].card} rounded-xl p-6`;
-            card.innerHTML = `
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-1">
-                            <h2 class="text-xl font-bold ${themeConfigs[currentTheme].text}">${room.name}</h2>
-                            <span id="status-${room.id}" class="px-2 py-0.5 text-xs rounded-full bg-slate-500/20 text-slate-300">Checking...</span>
-                        </div>
-                        <p class="${themeConfigs[currentTheme].subtext} text-sm">Device ID: ${room.id}</p>
-                        <a href="https://airq.m5stack.com/${room.id}" 
-                           target="_blank" 
-                           class="text-blue-400 hover:text-blue-300 text-sm mt-1 inline-block transition-colors">
-                            View Original Dashboard →
-                        </a>
-                    </div>
-                    <div class="flex gap-3">
-                        <a href="./templates/room.html?deviceId=${room.id}&name=${encodeURIComponent(room.name)}&templateStyle=${room.templateStyle}" 
-                           target="_blank" 
-                           class="${themeConfigs[currentTheme].button} px-4 py-2 rounded-lg text-sm transition-colors">
-                            View Widget
-                        </a>
-                        <button onclick="editRoom('${room.id}')" 
-                                class="px-4 py-2 bg-slate-500/20 hover:bg-slate-500/30 text-slate-300 rounded-lg text-sm transition-colors">
-                            Edit
-                        </button>
-                        <button onclick="deleteRoom('${room.id}')" 
-                                class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg text-sm transition-colors">
-                            Delete
-                        </button>
-                    </div>
-                </div>
-            `;
-            return card;
-        }
+window.hideAddRoomModal = () => {
+document.getElementById('addRoomModal').classList.remove('flex');
+document.getElementById('addRoomModal').classList.add('hidden');
+};
 
-        async function updateRoomStatus(roomId) {
-            const statusEl = document.getElementById(`status-${roomId}`);
-            try {
-                const room = rooms.find(r => r.id === roomId);
-                const response = await fetch(room.apiUrl);
-                const json = await response.json();
-                
-                if (!json || json.code !== 200 || !json.data) {
-                    throw new Error('Invalid response format');
-                }
+window.handleAddRoom = async (event) => {
+event.preventDefault();
 
-                const updateTime = parseInt(json.data.updateTime);
-                const currentTime = Math.floor(Date.now() / 1000); // Convert to seconds
-                const timeDiff = currentTime - updateTime;
+const name = document.getElementById('roomName').value;
+const deviceId = document.getElementById('deviceId').value;
+const templateStyle = document.getElementById('templateStyle').value;
 
-                // Define status thresholds
-                const ONLINE_THRESHOLD = 90; // 1.5 minutes
-                const STALE_THRESHOLD = 300; // 5 minutes
+const newRoom = {
+id: deviceId,
+name: name,
+templateStyle: templateStyle,
+apiUrl: `https://ezdata2.m5stack.com/api/v2/${deviceId}/dataMacByKey/raw`
+};
 
-                if (timeDiff <= ONLINE_THRESHOLD) {
-                    statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-300';
-                    statusEl.textContent = 'Online';
-                } else if (timeDiff <= STALE_THRESHOLD) {
-                    statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-amber-500/20 text-amber-300';
-                    statusEl.textContent = 'Stale';
-                } else {
-                    statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';
-                    statusEl.textContent = 'Offline';
-                }
-            } catch (error) {
-                statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';
-                statusEl.textContent = error.message === 'Invalid response format' ? 'Invalid Response' : 'No Connection';
-            }
-        }
+try {
+const result = await saveRoom(newRoom);
+if (result.success) {
+await loadRooms();
+hideAddRoomModal();
+event.target.reset();
+}
+} catch (error) {
+console.error('Error adding room:', error);
+}
+};
 
-        function updateStats() {
-            document.getElementById('totalRooms').textContent = rooms.length;
-            const now = new Date();
-            
-            // Format date as DD/MM/YYYY
-            const dateStr = now.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-            
-            // Format time as HH:MM:SS
-            const timeStr = now.toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true
-            });
-            
-            document.getElementById('lastUpdateDate').textContent = dateStr;
-            document.getElementById('lastUpdateTime').textContent = timeStr;
-        }
+window.editRoom = (roomId) => {
+const room = rooms.find(r => r.id === roomId);
+if (!room) return;
 
-        // Auto-refresh rooms status every 30 seconds
-        setInterval(() => {
-            if (currentUser) {
-                rooms.forEach(room => updateRoomStatus(room.id));
-                updateStats();
-            }
-        }, 30000);
+document.getElementById('roomName').value = room.name;
+document.getElementById('deviceId').value = room.id;
+document.getElementById('templateStyle').value = room.templateStyle || 'default';
+
+const form = document.querySelector('#addRoomModal form');
+form.onsubmit = (e) => handleEditRoom(e, roomId);
+
+document.querySelector('#addRoomModal h2').textContent = 'Edit Room';
+document.getElementById('roomSubmitButton').textContent = 'Update';
+showAddRoomModal();
+};
+
+window.handleEditRoom = async (event, roomId) => {
+event.preventDefault();
+
+const name = document.getElementById('roomName').value;
+const deviceId = document.getElementById('deviceId').value;
+const templateStyle = document.getElementById('templateStyle').value;
+
+const updatedRoom = {
+id: deviceId,
+name: name,
+templateStyle: templateStyle,
+apiUrl: `https://ezdata2.m5stack.com/api/v2/${deviceId}/dataMacByKey/raw`
+};
+
+try {
+const result = await saveRoom(updatedRoom);
+if (result.success) {
+await loadRooms();
+hideAddRoomModal();
+event.target.reset();
+event.target.onsubmit = handleAddRoom;
+document.querySelector('#addRoomModal h2').textContent = 'Add New Room';
+document.getElementById('roomSubmitButton').textContent = 'Add Room';
+}
+} catch (error) {
+console.error('Error updating room:', error);
+}
+};
+
+window.deleteRoom = async (roomId) => {
+if (!confirm('Are you sure you want to delete this room?')) return;
+
+try {
+const result = await deleteRoom(roomId);
+if (result.success) {
+await loadRooms();
+}
+} catch (error) {
+console.error('Error deleting room:', error);
+}
+};
+
+// Room rendering and data functions
+function renderRooms() {
+const grid = document.getElementById('roomsGrid');
+grid.innerHTML = '';
+rooms.forEach(room => {
+grid.appendChild(renderRoomCard(room));
+updateRoomStatus(room.id);
+});
+}
+
+function renderRoomCard(room) {
+const card = document.createElement('div');
+card.className = `${themeConfigs[currentTheme].card} rounded-xl p-6`;
+card.innerHTML = `
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-1">
+<h2 class="text-xl font-bold ${themeConfigs[currentTheme].text}">${room.name}</h2>
+<span id="status-${room.id}" class="px-2 py-0.5 text-xs rounded-full bg-slate-500/20 text-slate-300">Checking...</span>
+</div>
+<p class="${themeConfigs[currentTheme].subtext} text-sm">Device ID: ${room.id}</p>
+<a href="https://airq.m5stack.com/${room.id}" 
+   target="_blank" 
+   class="text-blue-400 hover:text-blue-300 text-sm mt-1 inline-block transition-colors">
+    View Original Dashboard →
+</a>
+</div>
+<div class="flex gap-3">
+<a href="./templates/room.html?deviceId=${room.id}&name=${encodeURIComponent(room.name)}&templateStyle=${room.templateStyle}" 
+   target="_blank" 
+   class="${themeConfigs[currentTheme].button} px-4 py-2 rounded-lg text-sm transition-colors">
+    View Widget
+</a>
+<button onclick="editRoom('${room.id}')" 
+        class="px-4 py-2 bg-slate-500/20 hover:bg-slate-500/30 text-slate-300 rounded-lg text-sm transition-colors">
+    Edit
+</button>
+<button onclick="deleteRoom('${room.id}')" 
+        class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg text-sm transition-colors">
+    Delete
+</button>
+</div>
+</div>
+`;
+return card;
+}
+
+async function updateRoomStatus(roomId) {
+const statusEl = document.getElementById(`status-${roomId}`);
+try {
+const room = rooms.find(r => r.id === roomId);
+const response = await fetch(room.apiUrl);
+const json = await response.json();
+
+if (!json || json.code !== 200 || !json.data) {
+throw new Error('Invalid response format');
+}
+
+const updateTime = parseInt(json.data.updateTime);
+const currentTime = Math.floor(Date.now() / 1000); // Convert to seconds
+const timeDiff = currentTime - updateTime;
+
+// Define status thresholds
+const ONLINE_THRESHOLD = 90; // 1.5 minutes
+const STALE_THRESHOLD = 300; // 5 minutes
+
+if (timeDiff <= ONLINE_THRESHOLD) {
+statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-300';
+statusEl.textContent = 'Online';
+} else if (timeDiff <= STALE_THRESHOLD) {
+statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-amber-500/20 text-amber-300';
+statusEl.textContent = 'Stale';
+} else {
+statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';
+statusEl.textContent = 'Offline';
+}
+} catch (error) {
+statusEl.className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';
+statusEl.textContent = error.message === 'Invalid response format' ? 'Invalid Response' : 'No Connection';
+}
+}
+
+function updateStats() {
+document.getElementById('totalRooms').textContent = rooms.length;
+const now = new Date();
+
+// Format date as DD/MM/YYYY
+const dateStr = now.toLocaleDateString('en-GB', {
+day: '2-digit',
+month: '2-digit',
+year: 'numeric'
+});
+
+// Format time as HH:MM:SS
+const timeStr = now.toLocaleTimeString('en-US', {
+hour: '2-digit',
+minute: '2-digit',
+second: '2-digit',
+hour12: true
+});
+
+document.getElementById('lastUpdateDate').textContent = dateStr;
+document.getElementById('lastUpdateTime').textContent = timeStr;
+}
+
+// Auto-refresh rooms status every 30 seconds
+setInterval(() => {
+if (currentUser) {
+rooms.forEach(room => updateRoomStatus(room.id));
+updateStats();
+}
+}, 30000);
 </script>
 </body>
 </html>
