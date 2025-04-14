@@ -1,0 +1,19 @@
+/* Main styles compiled for the air quality templates */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Additional glass effect styles */
+.glass-gradient {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+.metric-value {
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}

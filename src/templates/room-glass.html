@@ -4,10 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- CSP temporarily removed for troubleshooting -->
     <title>Air Quality Monitor</title>
-    <link href="../../dist/output.css" rel="stylesheet">
+    <link href="./assets/style.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">    <style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"><style>
         .glass-gradient {
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(15px);
@@ -66,9 +66,8 @@
             nox: { bg: 'from-amber-500/10 to-yellow-500/10 glass-gradient', text: 'text-amber-200' },
             co2: { bg: 'from-rose-500/10 to-red-500/10 glass-gradient', text: 'text-rose-200' }
         },
-        values: 'text-white metric-value'
-    };
+        values: 'text-white metric-value'    };
     </script>
-    <script src="../js/room.js"></script>
+    <script src="./js/room.js"></script>
 </body>
 </html>

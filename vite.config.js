@@ -14,6 +14,15 @@ export default defineConfig({
         room: resolve(__dirname, 'src/templates/room.html'),
         roomDefault: resolve(__dirname, 'src/templates/room-default.html'),
         roomGlass: resolve(__dirname, 'src/templates/room-glass.html')
+      },
+      output: {
+        // Ensure CSS gets a predictable name without hashes
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name.endsWith('.css')) {
+            return 'assets/style.css';
+          }
+          return 'assets/[name]-[hash][extname]';
+        }
       }
     }
   },

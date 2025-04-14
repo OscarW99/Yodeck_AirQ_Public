@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Dashboard</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-top: 0;
+        }
+        .btn {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 10px 0;
+            transition: background-color 0.2s;
+            font-weight: 500;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Air Quality Dashboard</h1>
+        <p>Select a room to view air quality data:</p>
+        
+        <a href="simplest-room.html?deviceId=24587C53B584&name=Room%201" class="btn">Room 1</a>
+        <br>
+        <a href="simplest-room.html?deviceId=24587C53B584&name=Conference%20Room" class="btn">Conference Room</a>
+    </div>
+</body>
+</html>
