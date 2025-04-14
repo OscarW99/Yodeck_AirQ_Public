@@ -1,14 +1,13 @@
 {  "name": "yodeck_airq",
   "version": "1.0.0",
   "description": "Yodeck Air Quality Widget",
-  "type": "module",
-  "main": "index.js",
-  "scripts": {
+  "type": "module",  "main": "index.js",  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "node generate-prod-config.js",
     "build": "vite build",
     "dev": "vite",
     "predeploy": "npm run build",
-    "deploy": "node deploy.js"
+    "deploy": "node simple-deploy.js"
   },
   "keywords": [],
   "author": "",

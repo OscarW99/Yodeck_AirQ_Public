@@ -1,5 +1,5 @@
 // Simple deployment script for the simplified HTML files
-const ghpages = require('gh-pages');
+import ghpages from 'gh-pages';
 
 console.log('Deploying simplified files to GitHub Pages...');
 
