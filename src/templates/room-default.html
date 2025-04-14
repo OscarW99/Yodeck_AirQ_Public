@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-<head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSP temporarily removed for troubleshooting -->
+<head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <!-- CSP temporarily removed for troubleshooting -->
     <title>Air Quality Monitor</title>
-    <link href="./assets/style.css" rel="stylesheet">
+    <link href="../dist/output.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -19,7 +18,7 @@
                 <!-- Air quality data will be populated by JavaScript -->
             </div>
         </div>    </div>    <script type="module">
-    import { validateAndSanitizeParams, sanitizeText } from './js/security-utils.js';
+    import { validateAndSanitizeParams, sanitizeText } from '../js/security-utils.js';
     
     try {
         const params = new URLSearchParams(window.location.search);
@@ -45,8 +44,7 @@
         console.error('Error loading configuration:', error);
         document.getElementById('roomTitle').textContent = 'Error: Invalid Configuration';
         document.getElementById('roomStatus').textContent = 'Error';
-        document.getElementById('roomStatus').className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';
-    }    </script>
-    <script src="./js/room.js"></script>
+        document.getElementById('roomStatus').className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';    }    </script>
+    <script src="../js/room.js"></script>
 </body>
 </html>
