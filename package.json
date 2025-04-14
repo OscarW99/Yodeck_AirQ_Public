@@ -7,9 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild": "node generate-prod-config.js",
-    "build": "vite build",
-    "dev": "vite",
-    "predeploy": "npm run build",
+    "build": "postcss src/styles/main.css -o dist/output.css",
+    "postbuild": "node copy-static.js",
     "deploy": "gh-pages -d dist"
   },
   "keywords": [],
@@ -20,8 +19,8 @@
     "gh-pages": "^6.0.0",
     "live-server": "^1.2.2",
     "postcss": "^8.4.21",
-    "tailwindcss": "^3.2.7",
-    "vite": "^6.2.5"
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^3.2.7"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
