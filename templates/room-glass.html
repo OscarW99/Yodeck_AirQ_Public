@@ -1,26 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSP temporarily removed for troubleshooting -->
-    <title>Air Quality Monitor</title>
+    <title>Air Quality Monitor</title>
+    <!-- Fix CSS path to use the correct build output path -->
+    <link href="../assets/style.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"><style>
-        .glass-gradient {
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        }
-        .metric-value {
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script type="module" crossorigin src="/temp-yodeck-airq/assets/roomGlass.js"></script>
-  <link rel="modulepreload" crossorigin href="/temp-yodeck-airq/assets/output-B_l4csH6.js">
+  <link rel="modulepreload" crossorigin href="/temp-yodeck-airq/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/temp-yodeck-airq/assets/room-Bcp0ykjP.js">
-  <link rel="stylesheet" crossorigin href="/temp-yodeck-airq/assets/style.css">
 </head>
 <body class="transition-colors duration-300">
     <div id="themeContainer" class="bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 min-h-screen font-['Inter']">
