@@ -7,7 +7,15 @@ export default defineConfig({
   envDir: '../', // Look for .env files in the project root, one level up from src
   build: {
     outDir: '../dist',
-    emptyOutDir: true
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'src/index.html'),
+        room: resolve(__dirname, 'src/templates/room.html'),
+        roomDefault: resolve(__dirname, 'src/templates/room-default.html'),
+        roomGlass: resolve(__dirname, 'src/templates/room-glass.html')
+      }
+    }
   },
   server: {
     port: 8080

@@ -16,8 +16,7 @@
         console.log('DEVICE_CONFIG already defined, initializing room data');
         initializeRoom(DEVICE_CONFIG, themeConfig);
     }
-    
-    // Main initialization function
+      // Main initialization function
     function initializeRoom(deviceConfig, themeConfig) {
         // Fetch and display air quality data
         async function fetchAndDisplayData() {

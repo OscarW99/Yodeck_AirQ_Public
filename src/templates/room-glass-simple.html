@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Monitor</title>
+    <link href="../styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="transition-colors duration-300">
+    <div id="themeContainer" class="bg-gradient-to-br from-white via-gray-100 to-gray-200 min-h-screen font-['Inter']">
+        <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+            <div class="flex items-center gap-3 mb-8">
+                <h1 id="roomTitle" class="text-3xl font-bold text-black/80 metric-value"></h1>
+                <span id="roomStatus" class="px-2 py-0.5 text-xs rounded-full bg-black/20 text-black">Checking...</span>
+            </div>
+            <div id="airQualityData" class="space-y-6">
+                <!-- Air quality data will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // Simplified device configuration from URL parameters
+    function setupDeviceConfig() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const deviceId = params.get('deviceId');
+            const roomName = params.get('name') || 'Room';
+            
+            if (!deviceId) {
+                throw new Error('Missing device ID');
+            }
+            
+            // Store in global variables for room.js
+            window.DEVICE_CONFIG = {
+                deviceId: deviceId,
+                name: roomName,
+                apiUrl: `https://ezdata2.m5stack.com/api/v2/${deviceId}/dataMacByKey/raw`
+            };
+            
+            window.themeConfig = {
+                background: 'from-white via-gray-100 to-gray-200',
+                metrics: {
+                    humidity: { bg: 'from-blue-100/50 to-cyan-100/50 glass-gradient', text: 'text-blue-800' },
+                    pm: { bg: 'from-violet-100/50 to-purple-100/50 glass-gradient', text: 'text-violet-800' },
+                    voc: { bg: 'from-emerald-100/50 to-green-100/50 glass-gradient', text: 'text-emerald-800' },
+                    nox: { bg: 'from-amber-100/50 to-yellow-100/50 glass-gradient', text: 'text-amber-800' },
+                    co2: { bg: 'from-rose-100/50 to-red-100/50 glass-gradient', text: 'text-rose-800' }
+                },
+                values: 'text-black/80'
+            };
+            
+            // Safely set text content
+            document.getElementById('roomTitle').textContent = DEVICE_CONFIG.name + ' Air Quality';
+            document.title = DEVICE_CONFIG.name + ' - Air Quality';
+            
+            return true;
+        } catch (error) {
+            console.error('Error loading configuration:', error);
+            document.getElementById('roomTitle').textContent = 'Error: Invalid Configuration';
+            document.getElementById('roomStatus').textContent = 'Error';
+            document.getElementById('roomStatus').className = 'px-3 py-1 text-xs font-semibold rounded-full bg-red-500/30 text-white';
+            return false;
+        }
+    }
+    
+    // Set up configuration immediately
+    setupDeviceConfig();
+    </script>
+    
+    <script src="../js/room.js"></script>
+</body>
+</html>
