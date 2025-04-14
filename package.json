@@ -6,7 +6,6 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    // "prebuild": "node generate-prod-config.js", // DISABLED to prevent overwriting prod-config.js
     "build": "postcss src/styles/main.css -o dist/output.css",
     "postbuild": "node copy-static.cjs",
     "deploy": "gh-pages -d dist"
