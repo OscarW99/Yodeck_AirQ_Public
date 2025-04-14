@@ -7,10 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/temp-yodeck-airq/assets/roomGlass.js"></script>
-  <link rel="modulepreload" crossorigin href="/temp-yodeck-airq/assets/modulepreload-polyfill-B5Qt9EMX.js">
-  <link rel="modulepreload" crossorigin href="/temp-yodeck-airq/assets/room-Bcp0ykjP.js">
-  <link rel="stylesheet" crossorigin href="/temp-yodeck-airq/styles/style.css">
 </head>
 <body class="transition-colors duration-300">
     <div id="themeContainer" class="bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 min-h-screen font-['Inter']">
@@ -26,6 +22,39 @@
     </div>    <script>
     // Create global variable for DEVICE_CONFIG that room.js depends on
     var DEVICE_CONFIG;
-    </script>
+    </script>
+    <script type="module">
+    import { validateAndSanitizeParams, sanitizeText } from '../js/security-utils.js';
+    
+    try {
+        const params = new URLSearchParams(window.location.search);
+        // Store in global variable for room.js
+        window.DEVICE_CONFIG = validateAndSanitizeParams(params);
+        
+        // Safely set text content using the sanitized name
+        document.getElementById('roomTitle').textContent = DEVICE_CONFIG.name + ' Air Quality';
+        document.title = DEVICE_CONFIG.name + ' - Air Quality';
+    } catch (error) {
+        console.error('Error loading configuration:', error);
+        document.getElementById('roomTitle').textContent = 'Error: Invalid Configuration';
+        document.getElementById('roomStatus').textContent = 'Error';
+        document.getElementById('roomStatus').className = 'px-3 py-1 text-xs font-semibold rounded-full bg-red-500/30 text-white';
+        
+        document.getElementById('airQualityData').innerHTML = sanitizeText(`
+            <div class="text-white/90 p-6 rounded-xl glass">
+                Error: Invalid device configuration. Please check the URL parameters.
+            </div>
+        `);
+    }    window.themeConfig = {
+        background: 'from-blue-600 via-indigo-700 to-purple-800',
+        metrics: {
+            humidity: { bg: 'from-blue-500/10 to-cyan-500/10 glass-gradient', text: 'text-blue-200' },
+            pm: { bg: 'from-violet-500/10 to-purple-500/10 glass-gradient', text: 'text-violet-200' },
+            voc: { bg: 'from-emerald-500/10 to-green-500/10 glass-gradient', text: 'text-emerald-200' },
+            nox: { bg: 'from-amber-500/10 to-yellow-500/10 glass-gradient', text: 'text-amber-200' },
+            co2: { bg: 'from-rose-500/10 to-red-500/10 glass-gradient', text: 'text-rose-200' }        },
+        values: 'text-white metric-value'    };
+    </script>
+    <script src="../js/room.js" type="module"></script>
 </body>
 </html>

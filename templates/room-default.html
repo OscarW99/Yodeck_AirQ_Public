@@ -7,10 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/temp-yodeck-airq/assets/roomDefault.js"></script>
-  <link rel="modulepreload" crossorigin href="/temp-yodeck-airq/assets/modulepreload-polyfill-B5Qt9EMX.js">
-  <link rel="modulepreload" crossorigin href="/temp-yodeck-airq/assets/room-Bcp0ykjP.js">
-  <link rel="stylesheet" crossorigin href="/temp-yodeck-airq/styles/style.css">
 </head>
 <body class="transition-colors duration-300">
     <div id="themeContainer" class="bg-gradient-to-br from-slate-900 to-slate-800 min-h-screen font-['Inter']">
@@ -22,6 +18,32 @@
             <div id="airQualityData" class="space-y-6">
                 <!-- Air quality data will be populated by JavaScript -->
             </div>
-        </div>    </div>    
+        </div>    </div>    <script type="module">    import { validateAndSanitizeParams, sanitizeText } from '../js/security-utils.js';
+      try {
+        const params = new URLSearchParams(window.location.search);
+        // Store in global variables for room.js
+        window.DEVICE_CONFIG = validateAndSanitizeParams(params);
+        
+        window.themeConfig = {
+            background: 'from-slate-900 to-slate-800',
+            metrics: {
+                humidity: { bg: 'from-cyan-500/10 to-blue-500/10', text: 'text-cyan-300' },
+                pm: { bg: 'from-violet-500/10 to-purple-500/10', text: 'text-violet-300' },
+                voc: { bg: 'from-emerald-500/10 to-green-500/10', text: 'text-emerald-300' },
+                nox: { bg: 'from-amber-500/10 to-yellow-500/10', text: 'text-amber-300' },
+                co2: { bg: 'from-rose-500/10 to-red-500/10', text: 'text-rose-300' }
+            },
+            values: 'text-white'
+        };
+        
+        // Safely set text content using the sanitized name
+        document.getElementById('roomTitle').textContent = DEVICE_CONFIG.name + ' Air Quality';
+        document.title = DEVICE_CONFIG.name + ' - Air Quality';
+    } catch (error) {
+        console.error('Error loading configuration:', error);
+        document.getElementById('roomTitle').textContent = 'Error: Invalid Configuration';
+        document.getElementById('roomStatus').textContent = 'Error';
+        document.getElementById('roomStatus').className = 'px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300';    }    </script>
+    <script src="../js/room.js" type="module"></script>
 </body>
 </html>
