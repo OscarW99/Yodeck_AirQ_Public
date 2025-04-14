@@ -3,7 +3,7 @@ import { resolve } from 'path';
 
 export default defineConfig({
   root: 'src',
-  base: './', // Add base configuration for GitHub Pages
+  base: process.env.NODE_ENV === 'production' ? '/temp-yodeck-airq/' : '/',
   envDir: '../', // Look for .env files in the project root, one level up from src
   build: {
     outDir: '../dist',
