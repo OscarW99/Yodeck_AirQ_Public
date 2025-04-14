@@ -1,15 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{html,js}"],
+  content: [
+    "./src/**/*.{html,js,ts,jsx,tsx}",
+  ],
+  darkMode: 'class',
   theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-      backdropBlur: {
-        sm: '4px',
-      },
-    },
+    extend: {},
   },
   plugins: [],
 }

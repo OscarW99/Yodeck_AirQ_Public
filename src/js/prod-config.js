@@ -1,7 +1,6 @@
 // This file is auto-generated during the build process. 
 // DO NOT EDIT MANUALLY.
 
-// Export the ENV variables as a module
 window.ENV = {
   "VITE_API_URL": "https://production-api-url.com",
   "VITE_APP_TITLE": "Air Quality Monitor",
@@ -13,6 +12,3 @@ window.ENV = {
   "VITE_FIREBASE_PROJECT_ID": "yodeckairq",
   "VITE_FIREBASE_STORAGE_BUCKET": "yodeckairq.firebasestorage.app"
 };
-
-// Export for module usage
-export default window.ENV;
