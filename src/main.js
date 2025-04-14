@@ -1,5 +1,5 @@
-// Import the CSS file to ensure it's included in the build
-import './styles.css';
+// Import the compiled Tailwind CSS file from the correct location
+import './dist/output.css';
 
 // Additional JavaScript imports or code can go here
 console.log('Main script loaded');
