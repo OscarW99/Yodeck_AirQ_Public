@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSP temporarily removed for troubleshooting -->
+    <title>Air Quality Monitor</title>
+    <link href="../../dist/output.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">    <style>
+        .glass-gradient {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .metric-value {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+  <script type="module" crossorigin src="../assets/roomGlass-Z4dY5Dk6.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="../assets/security-utils-B0Vk1wkE.js">
+</head>
+<body class="transition-colors duration-300">
+    <div id="themeContainer" class="bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 min-h-screen font-['Inter']">
+        <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+            <div class="flex items-center gap-3 mb-8">
+                <h1 id="roomTitle" class="text-3xl font-bold text-black/90 metric-value"></h1>
+                <span id="roomStatus" class="px-2 py-0.5 text-xs rounded-full bg-black/30 text-white">Checking...</span>
+            </div>
+            <div id="airQualityData" class="space-y-6">
+                <!-- Air quality data will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>    <script>
+    // Create global variable for DEVICE_CONFIG that room.js depends on
+    var DEVICE_CONFIG;
+    </script>
+    <script src="../js/room.js"></script>
+</body>
+</html>

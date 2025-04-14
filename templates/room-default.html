@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSP temporarily removed for troubleshooting -->
+    <title>Air Quality Monitor</title>
+    <link href="../assets/index-CvRXWqXH.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="../assets/roomDefault-C93PZLiK.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="../assets/security-utils-B0Vk1wkE.js">
+</head>
+<body class="transition-colors duration-300">
+    <div id="themeContainer" class="bg-gradient-to-br from-slate-900 to-slate-800 min-h-screen font-['Inter']">
+        <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+            <div class="flex items-center gap-3 mb-8">
+                <h1 id="roomTitle" class="text-3xl font-bold text-white/90"></h1>
+                <span id="roomStatus" class="px-2 py-0.5 text-xs rounded-full bg-slate-500/20 text-slate-300">Checking...</span>
+            </div>
+            <div id="airQualityData" class="space-y-6">
+                <!-- Air quality data will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>    
+    <script src="../js/room.js"></script>
+</body>
+</html>
