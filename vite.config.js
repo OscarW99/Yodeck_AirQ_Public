@@ -22,13 +22,24 @@ export default defineConfig({
             return 'assets/style.css';
           }
           return 'assets/[name]-[hash][extname]';
-        }
+        },
+        // Ensure JS keeps its directory structure
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
       }
+    },
+    // Ensure external modules are properly handled
+    commonjsOptions: {
+      include: [/node_modules/],
     }
   },
   server: {
     port: 8080
   },
   // Ensure environment variables are properly loaded
-  envPrefix: 'VITE_'
+  envPrefix: 'VITE_',
+  // Handle external imports
+  optimizeDeps: {
+    exclude: ['firebase']
+  }
 });
