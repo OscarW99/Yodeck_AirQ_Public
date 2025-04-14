@@ -7,7 +7,7 @@
     "build": "vite build",
     "dev": "vite",
     "predeploy": "npm run build",
-    "deploy": "node simple-deploy.js"
+    "deploy": "node deploy-production.js"
   },
   "keywords": [],
   "author": "",
