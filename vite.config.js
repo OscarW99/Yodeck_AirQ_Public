@@ -16,10 +16,10 @@ export default defineConfig({
         roomGlass: resolve(__dirname, 'src/templates/room-glass.html')
       },
       output: {
-        // Ensure CSS gets a predictable name without hashes in a fixed location
+        // Make CSS output more predictable by not hashing in production
         assetFileNames: (assetInfo) => {
           if (assetInfo.name.endsWith('.css')) {
-            return 'assets/style.css';
+            return 'styles/[name].css';
           }
           return 'assets/[name]-[hash][extname]';
         },
@@ -28,7 +28,7 @@ export default defineConfig({
         chunkFileNames: 'assets/[name]-[hash].js',
       }
     },
-    // Ensure CSS is not inlined but extracted
+    // Extract CSS to avoid CSS in JS issues
     cssCodeSplit: false,
     // Minify CSS to reduce size
     cssMinify: true,

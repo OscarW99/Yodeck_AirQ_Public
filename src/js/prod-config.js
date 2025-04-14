@@ -2,8 +2,6 @@
 // DO NOT EDIT MANUALLY.
 
 window.ENV = {
-  "VITE_API_URL": "https://production-api-url.com",
-  "VITE_APP_TITLE": "Air Quality Monitor",
   "VITE_FIREBASE_API_KEY": "AIzaSyDS-Nk3hefhYqri9fntp0vNtX7wThrAIsE",
   "VITE_FIREBASE_APP_ID": "1:529860642391:web:e01858f90587f5d77c0512",
   "VITE_FIREBASE_AUTH_DOMAIN": "yodeckairq.firebaseapp.com",
