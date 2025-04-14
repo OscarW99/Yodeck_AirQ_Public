@@ -2,6 +2,7 @@
 window.FIREBASE_CONFIG = {
   "apiKey": "AIzaSyDS-Nk3hefhYqri9fntp0vNtX7wThrAIsE",
   "authDomain": "yodeckairq.firebaseapp.com",
+  "databaseURL": "https://yodeckairq-default-rtdb.europe-west1.firebasedatabase.app",
   "projectId": "yodeckairq",
   "storageBucket": "yodeckairq.firebasestorage.app",
   "messagingSenderId": "529860642391",
