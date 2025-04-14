@@ -13,7 +13,7 @@ const firebaseConfig = window.FIREBASE_CONFIG;
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const database = getDatabase(app);
+const database = getDatabase(app, firebaseConfig.databaseURL);
 
 // Authentication functions
 export const loginUser = async (email, password) => {
