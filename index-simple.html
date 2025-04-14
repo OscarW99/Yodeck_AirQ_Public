@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Dashboard</title>
+    <style>
+        /* Simple styling for the dashboard */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .btn {
+            display: inline-block;
+            background: #4a90e2;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Air Quality Dashboard</h1>
+        <p>Select a room to view air quality data:</p>
+        
+        <a href="room.html?deviceId=24587C53B584&name=Room%201&templateStyle=default" class="btn">Room 1 (Default Style)</a>
+        <br>
+        <a href="room.html?deviceId=24587C53B584&name=Room%201&templateStyle=glass" class="btn">Room 1 (Glass Style)</a>
+    </div>
+</body>
+</html>

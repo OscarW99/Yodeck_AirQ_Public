@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Monitor</title>
+    <script>
+        // Get room configuration from URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const template = params.get('templateStyle') || 'default';
+        
+        // Map template names to file paths
+        const templateFiles = {
+            'default': 'room-default-simple.html',
+            'glass': 'room-glass-simple.html'
+        };
+        
+        // Redirect to the appropriate template while preserving all URL parameters
+        const selectedTemplate = templateFiles[template] || templateFiles.default;
+        window.location.href = selectedTemplate + window.location.search;
+    </script>
+</head>
+<body style="background-color: #0f172a; color: white; font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+    <p>Loading template...</p>
+</body>
+</html>
