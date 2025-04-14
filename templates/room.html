@@ -8,10 +8,11 @@
         // Get room configuration from URL parameters
         const params = new URLSearchParams(window.location.search);
         const template = params.get('templateStyle') || 'default';
-          // Map template names to file paths
+        
+        // Map template names to file paths - use relative paths that work with GitHub Pages
         const templateFiles = {
-            'default': 'room-default.html',
-            'glass': 'room-glass.html'
+            'default': './room-default.html',
+            'glass': './room-glass.html'
         };
         
         // Redirect to the appropriate template while preserving all URL parameters
