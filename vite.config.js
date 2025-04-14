@@ -19,7 +19,8 @@ export default defineConfig({
         // Make CSS output more predictable by not hashing in production
         assetFileNames: (assetInfo) => {
           if (assetInfo.name.endsWith('.css')) {
-            return 'styles/[name].css';
+            // Ensure CSS files are output with consistent naming
+            return 'dist/output.css';
           }
           return 'assets/[name]-[hash][extname]';
         },
