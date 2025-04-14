@@ -23,15 +23,11 @@ function copyRecursiveSync(src, dest) {
 // Ensure dist exists
 if (!fs.existsSync(DIST)) fs.mkdirSync(DIST);
 
-// Copy root HTML files
-for (const file of ['index.html', 'index-simple.html', 'simplest-room.html']) {
-  if (fs.existsSync(file)) fs.copyFileSync(file, path.join(DIST, file));
-}
-
 // Copy src/index.html as the main index.html in dist (for GitHub Pages root)
 if (fs.existsSync(path.join(SRC, 'index.html'))) {
   fs.copyFileSync(path.join(SRC, 'index.html'), path.join(DIST, 'index.html'));
 }
+// Do NOT copy the root index.html to dist/index.html (prevents placeholder overwrite)
 
 // Optionally, you can still copy it as src-index.html if you want a backup/reference
 // fs.copyFileSync(path.join(SRC, 'index.html'), path.join(DIST, 'src-index.html'));
