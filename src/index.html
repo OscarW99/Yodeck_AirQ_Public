@@ -5,7 +5,7 @@
 <title>Air Quality Dashboard</title>
 <!-- Include production configuration for Firebase (ignored in development) -->
 <script src="./js/prod-config.js" type="module"></script>
-<!-- Directly include the CSS file that's being generated in the gh-pages branch -->
+<!-- Link to the CSS file that already exists in the repo -->
 <link rel="stylesheet" href="./styles/style.css">
 <!-- Keep the main.js import for JavaScript functionality -->
 <script type="module" src="./main.js"></script>
@@ -169,7 +169,6 @@ rooms = [];
 }
 });
 
-// Handle login form submission
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
 e.preventDefault();
 const email = document.getElementById('loginEmail').value;
@@ -219,7 +218,6 @@ console.error('Logout error:', error);
 }
 };
 
-// Room management
 async function loadRooms() {
 try {
 console.log('Loading rooms...');
