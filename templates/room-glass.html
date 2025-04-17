@@ -5,41 +5,48 @@
     <!-- Fix CSS path to use the correct build output path -->
     <link href="../output.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">    <style>
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden;
+            overflow: auto; /* Allow scrolling if needed */
         }
         #themeContainer {
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
+            min-height: 100vh;
+            width: 100%;
             display: flex;
             flex-direction: column;
         }
         #airQualityData {
             flex: 1;
-            overflow: hidden;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.75rem;
+            align-items: start;
         }
-        /* Responsive font sizes */
+        /* Scale card size based on viewport */
         @media (max-width: 640px) {
             html { font-size: 14px; }
+            #airQualityData {
+                grid-template-columns: 1fr;
+            }
         }
         @media (min-width: 641px) and (max-width: 1024px) {
             html { font-size: 16px; }
+            #airQualityData {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
         }
         @media (min-width: 1025px) {
             html { font-size: 18px; }
         }
+        /* Scale text inside metrics */
+        .metric-title {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+        }
         .metric-value {
-            font-size: clamp(1rem, 3vw, 1.5rem);
+            font-size: clamp(1.2rem, 3vw, 1.75rem);
         }
     </style>
 </head>
