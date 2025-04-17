@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-<head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-height, initial-scale=1.0">
     <title>Air Quality Monitor</title>
     <!-- Fix CSS path to use the correct build output path -->
     <link href="../output.css" rel="stylesheet">
@@ -8,15 +8,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="transition-colors duration-300">
-    <div id="themeContainer" class="bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 min-h-screen font-['Inter']">
-        <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-            <div class="flex items-center gap-3 mb-8">
-                <h1 id="roomTitle" class="text-3xl font-bold text-black/90 metric-value"></h1>
-                <span id="roomStatus" class="px-2 py-0.5 text-xs rounded-full bg-black/30 text-white">Checking...</span>
-            </div>
-            <div id="airQualityData" class="space-y-6">
-                <!-- Air quality data will be populated by JavaScript -->
+<body class="transition-colors duration-300 h-full w-full" style="margin:0;padding:0;overflow:hidden;">
+    <div id="scaler" style="display:flex;align-items:center;justify-content:center;width:100vw;height:100vh;overflow:hidden;">
+        <div id="themeContainer" class="bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 font-['Inter']" style="transform-origin:top left;">
+            <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+                <div class="flex items-center gap-3 mb-8">
+                    <h1 id="roomTitle" class="text-3xl font-bold text-black/90 metric-value"></h1>
+                    <span id="roomStatus" class="px-2 py-0.5 text-xs rounded-full bg-black/30 text-white">Checking...</span>
+                </div>
+                <div id="airQualityData" class="space-y-6">
+                    <!-- Air quality data will be populated by JavaScript -->
+                </div>
             </div>
         </div>
     </div>    <script>
@@ -56,5 +58,20 @@
         values: 'text-white metric-value'    };
     </script>
     <script src="../js/room.js" type="module"></script>
+    <script>
+window.addEventListener('DOMContentLoaded', function() {
+  function scaleContent() {
+    var scaler = document.getElementById('scaler');
+    var container = document.getElementById('themeContainer');
+    if (!scaler || !container) return;
+    var scaleX = scaler.offsetWidth / 1280;
+    var scaleY = scaler.offsetHeight / 800;
+    var scale = Math.min(scaleX, scaleY);
+    container.style.transform = 'scale(' + scale + ')';
+  }
+  window.addEventListener('resize', scaleContent);
+  scaleContent();
+});
+</script>
 </body>
 </html>
