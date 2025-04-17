@@ -148,6 +148,99 @@
                 };
             }
         }
+        // Helper function to generate VOC status message
+        function getVOCStatus(voc) {
+            if (voc === undefined || voc === null || isNaN(voc)) {
+                return {
+                    icon: '❌',
+                    message: 'Volatile Organic Compounds data unavailable. Optimal Range: 0–65.'
+                };
+            }
+            const value = Number(voc);
+            if (value >= 0 && value <= 65) {
+                return {
+                    icon: '✅',
+                    message: 'Volatile Organic Compounds levels are excellent. Optimal Range: 0–65.'
+                };
+            } else if (value >= 66 && value <= 220) {
+                return {
+                    icon: '⚠️',
+                    message: 'Volatile Organic Compounds levels are slightly elevated. Optimal Range: 0–65.'
+                };
+            } else if (value > 220) {
+                return {
+                    icon: '❌',
+                    message: 'Volatile Organic Compounds levels are too high. Optimal Range: 0–65.'
+                };
+            } else {
+                return {
+                    icon: '❌',
+                    message: 'Volatile Organic Compounds data unavailable. Optimal Range: 0–65.'
+                };
+            }
+        }
+        // Helper function to generate NOx status message
+        function getNOxStatus(nox) {
+            if (nox === undefined || nox === null || isNaN(nox)) {
+                return {
+                    icon: '❌',
+                    message: 'Nitrogen Oxides data unavailable. Optimal Range: 0–25.'
+                };
+            }
+            const value = Number(nox);
+            if (value >= 0 && value <= 25) {
+                return {
+                    icon: '✅',
+                    message: 'Nitrogen Oxides levels are excellent. Optimal Range: 0–25.'
+                };
+            } else if (value >= 26 && value <= 50) {
+                return {
+                    icon: '⚠️',
+                    message: 'Nitrogen Oxides levels are slightly elevated. Optimal Range: 0–25.'
+                };
+            } else if (value > 50) {
+                return {
+                    icon: '❌',
+                    message: 'Nitrogen Oxides levels are too high. Optimal Range: 0–25.'
+                };
+            } else {
+                return {
+                    icon: '❌',
+                    message: 'Nitrogen Oxides data unavailable. Optimal Range: 0–25.'
+                };
+            }
+        }
+        // Helper function to generate CO2 status message
+        function getCO2Status(co2) {
+            if (co2 === undefined || co2 === null || isNaN(co2)) {
+                return {
+                    icon: '❌',
+                    message: 'Carbon Dioxide data unavailable. Optimal Range: 400–800 ppm.'
+                };
+            }
+            const value = Number(co2);
+            if (value >= 400 && value <= 800) {
+                return {
+                    icon: '✅',
+                    message: 'Carbon Dioxide levels are excellent. Optimal Range: 400–800 ppm.'
+                };
+            } else if (value >= 801 && value <= 1000) {
+                return {
+                    icon: '⚠️',
+                    message: 'Carbon Dioxide levels are slightly elevated. Optimal Range: 400–800 ppm.'
+                };
+            } else if (value > 1000) {
+                return {
+                    icon: '❌',
+                    message: 'Carbon Dioxide levels are too high. Optimal Range: 400–800 ppm.'
+                };
+            } else {
+                return {
+                    icon: '❌',
+                    message: 'Carbon Dioxide data unavailable. Optimal Range: 400–800 ppm.'
+                };
+            }
+        }
 
         function displayMetricsHtml(data, themeConfigObj) {
             // If themeConfig isn't passed, use a default
@@ -244,6 +337,33 @@
                     // Single measurement section
                     if (section.type === 'humidity') {
                         const status = getHumidityStatus(section.value);
+                        return `
+                            <div class="rounded-xl p-6 bg-gradient-to-br ${theme.metrics[section.type].bg}">
+                                <h2 class="text-lg font-semibold mb-1 ${theme.metrics[section.type].text}">${section.title}</h2>
+                                <div class="text-3xl font-bold mb-2 ${theme.values}">${formatValue(section.value, section.unit)}</div>
+                                <div class="text-sm flex items-center gap-2 ${theme.metrics[section.type].text}"><span>${status.icon}</span> <span>${status.message}</span></div>
+                            </div>
+                        `;
+                    } else if (section.type === 'voc') {
+                        const status = getVOCStatus(section.value);
+                        return `
+                            <div class="rounded-xl p-6 bg-gradient-to-br ${theme.metrics[section.type].bg}">
+                                <h2 class="text-lg font-semibold mb-1 ${theme.metrics[section.type].text}">${section.title}</h2>
+                                <div class="text-3xl font-bold mb-2 ${theme.values}">${formatValue(section.value, section.unit)}</div>
+                                <div class="text-sm flex items-center gap-2 ${theme.metrics[section.type].text}"><span>${status.icon}</span> <span>${status.message}</span></div>
+                            </div>
+                        `;
+                    } else if (section.type === 'nox') {
+                        const status = getNOxStatus(section.value);
+                        return `
+                            <div class="rounded-xl p-6 bg-gradient-to-br ${theme.metrics[section.type].bg}">
+                                <h2 class="text-lg font-semibold mb-1 ${theme.metrics[section.type].text}">${section.title}</h2>
+                                <div class="text-3xl font-bold mb-2 ${theme.values}">${formatValue(section.value, section.unit)}</div>
+                                <div class="text-sm flex items-center gap-2 ${theme.metrics[section.type].text}"><span>${status.icon}</span> <span>${status.message}</span></div>
+                            </div>
+                        `;
+                    } else if (section.type === 'co2') {
+                        const status = getCO2Status(section.value);
                         return `
                             <div class="rounded-xl p-6 bg-gradient-to-br ${theme.metrics[section.type].bg}">
                                 <h2 class="text-lg font-semibold mb-1 ${theme.metrics[section.type].text}">${section.title}</h2>
@@ -384,6 +504,33 @@ function displayMetricsHtml(data) {
             // Single measurement section
             if (section.type === 'humidity') {
                 const status = getHumidityStatus(section.value);
+                return `
+                    <div class="rounded-xl p-6 bg-gradient-to-br ${themeConfig.metrics[section.type].bg}">
+                        <h2 class="text-lg font-semibold mb-1 ${themeConfig.metrics[section.type].text}">${section.title}</h2>
+                        <div class="text-3xl font-bold mb-2 ${themeConfig.values}">${formatValue(section.value, section.unit)}</div>
+                        <div class="text-sm flex items-center gap-2 ${themeConfig.metrics[section.type].text}"><span>${status.icon}</span> <span>${status.message}</span></div>
+                    </div>
+                `;
+            } else if (section.type === 'voc') {
+                const status = getVOCStatus(section.value);
+                return `
+                    <div class="rounded-xl p-6 bg-gradient-to-br ${themeConfig.metrics[section.type].bg}">
+                        <h2 class="text-lg font-semibold mb-1 ${themeConfig.metrics[section.type].text}">${section.title}</h2>
+                        <div class="text-3xl font-bold mb-2 ${themeConfig.values}">${formatValue(section.value, section.unit)}</div>
+                        <div class="text-sm flex items-center gap-2 ${themeConfig.metrics[section.type].text}"><span>${status.icon}</span> <span>${status.message}</span></div>
+                    </div>
+                `;
+            } else if (section.type === 'nox') {
+                const status = getNOxStatus(section.value);
+                return `
+                    <div class="rounded-xl p-6 bg-gradient-to-br ${themeConfig.metrics[section.type].bg}">
+                        <h2 class="text-lg font-semibold mb-1 ${themeConfig.metrics[section.type].text}">${section.title}</h2>
+                        <div class="text-3xl font-bold mb-2 ${themeConfig.values}">${formatValue(section.value, section.unit)}</div>
+                        <div class="text-sm flex items-center gap-2 ${themeConfig.metrics[section.type].text}"><span>${status.icon}</span> <span>${status.message}</span></div>
+                    </div>
+                `;
+            } else if (section.type === 'co2') {
+                const status = getCO2Status(section.value);
                 return `
                     <div class="rounded-xl p-6 bg-gradient-to-br ${themeConfig.metrics[section.type].bg}">
                         <h2 class="text-lg font-semibold mb-1 ${themeConfig.metrics[section.type].text}">${section.title}</h2>
