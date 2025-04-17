@@ -79,6 +79,47 @@
         }
 
         // Helper function to generate metrics HTML
+        function getHumidityStatus(humidity) {
+            if (humidity === undefined || humidity === null || isNaN(humidity)) {
+                return {
+                    icon: '❌',
+                    message: 'Relative air humidity is unavailable. Optimal range: 40–60%.'
+                };
+            }
+            const value = Number(humidity);
+            if (value >= 40 && value <= 60) {
+                return {
+                    icon: '✅',
+                    message: 'Relative air humidity is at a comfortable level. Optimal range: 40–60%.'
+                };
+            } else if (value >= 30 && value < 40) {
+                return {
+                    icon: '⚠️',
+                    message: 'Relative air humidity is is a bit low. Optimal range is 40–60%.'
+                };
+            } else if (value > 60 && value <= 70) {
+                return {
+                    icon: '⚠️',
+                    message: 'Relative air humidity is is a bit high. Optimal range is 40–60%.'
+                };
+            } else if (value < 30) {
+                return {
+                    icon: '❌',
+                    message: 'Relative air humidity is is too low. Optimal range is 40–60%.'
+                };
+            } else if (value > 70) {
+                return {
+                    icon: '❌',
+                    message: 'Relative air humidity is is too high. Optimal range is 40–60%.'
+                };
+            } else {
+                return {
+                    icon: '❌',
+                    message: 'Relative air humidity is unavailable. Optimal range: 40–60%.'
+                };
+            }
+        }
+
         function displayMetricsHtml(data, themeConfigObj) {
             // If themeConfig isn't passed, use a default
             const theme = themeConfigObj || {
@@ -153,13 +194,24 @@
                     `;
                 } else {
                     // Single measurement section
-                    return `
-                        <div class="rounded-xl p-6 bg-gradient-to-br ${theme.metrics[section.type].bg}">
-                            <h2 class="text-lg font-semibold mb-1 ${theme.metrics[section.type].text}">${section.title}</h2>
-                            <div class="text-3xl font-bold mb-2 ${theme.values}">${formatValue(section.value, section.unit)}</div>
-                            <div class="text-sm ${theme.metrics[section.type].text}">${section.description}</div>
-                        </div>
-                    `;
+                    if (section.type === 'humidity') {
+                        const status = getHumidityStatus(section.value);
+                        return `
+                            <div class="rounded-xl p-6 bg-gradient-to-br ${theme.metrics[section.type].bg}">
+                                <h2 class="text-lg font-semibold mb-1 ${theme.metrics[section.type].text}">${section.title}</h2>
+                                <div class="text-3xl font-bold mb-2 ${theme.values}">${formatValue(section.value, section.unit)}</div>
+                                <div class="text-sm flex items-center gap-2 ${theme.metrics[section.type].text}"><span>${status.icon}</span> <span>${status.message}</span></div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="rounded-xl p-6 bg-gradient-to-br ${theme.metrics[section.type].bg}">
+                                <h2 class="text-lg font-semibold mb-1 ${theme.metrics[section.type].text}">${section.title}</h2>
+                                <div class="text-3xl font-bold mb-2 ${theme.values}">${formatValue(section.value, section.unit)}</div>
+                                <div class="text-sm ${theme.metrics[section.type].text}">${section.description}</div>
+                            </div>
+                        `;
+                    }
                 }
             }).join('');
         }
@@ -263,13 +315,24 @@ function displayMetricsHtml(data) {
             `;
         } else {
             // Single measurement section
-            return `
-                <div class="rounded-xl p-6 bg-gradient-to-br ${themeConfig.metrics[section.type].bg}">
-                    <h2 class="text-lg font-semibold mb-1 ${themeConfig.metrics[section.type].text}">${section.title}</h2>
-                    <div class="text-3xl font-bold mb-2 ${themeConfig.values}">${formatValue(section.value, section.unit)}</div>
-                    <div class="text-sm ${themeConfig.metrics[section.type].text}">${section.description}</div>
-                </div>
-            `;
+            if (section.type === 'humidity') {
+                const status = getHumidityStatus(section.value);
+                return `
+                    <div class="rounded-xl p-6 bg-gradient-to-br ${themeConfig.metrics[section.type].bg}">
+                        <h2 class="text-lg font-semibold mb-1 ${themeConfig.metrics[section.type].text}">${section.title}</h2>
+                        <div class="text-3xl font-bold mb-2 ${themeConfig.values}">${formatValue(section.value, section.unit)}</div>
+                        <div class="text-sm flex items-center gap-2 ${themeConfig.metrics[section.type].text}"><span>${status.icon}</span> <span>${status.message}</span></div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="rounded-xl p-6 bg-gradient-to-br ${themeConfig.metrics[section.type].bg}">
+                        <h2 class="text-lg font-semibold mb-1 ${themeConfig.metrics[section.type].text}">${section.title}</h2>
+                        <div class="text-3xl font-bold mb-2 ${themeConfig.values}">${formatValue(section.value, section.unit)}</div>
+                        <div class="text-sm ${themeConfig.metrics[section.type].text}">${section.description}</div>
+                    </div>
+                `;
+            }
         }
     }).join('');
 }
