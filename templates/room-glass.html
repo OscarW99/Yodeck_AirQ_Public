@@ -5,8 +5,7 @@
     <!-- Fix CSS path to use the correct build output path -->
     <link href="../output.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">    <style>
-        html, body {
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">    <style>        html, body {
             height: 100%;
             margin: 0;
             padding: 0;
@@ -17,26 +16,34 @@
             width: 100%;
             display: flex;
             flex-direction: column;
+            padding-bottom: 0; /* Remove bottom padding */
         }
         #airQualityData {
             flex: 1;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 0.75rem;
-            align-items: start;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-bottom: 0; /* Remove bottom padding */
+            margin-bottom: 0; /* Remove bottom margin */
         }
-        /* Scale card size based on viewport */
+        /* Scale based on viewport */
+        @media (max-height: 600px) {
+            .metric-card {
+                padding: 0.5rem !important; /* Reduced padding for small heights */
+            }
+            #airQualityData {
+                gap: 0.25rem;
+            }
+            .metric-description {
+                display: none; /* Hide descriptions when height is limited */
+            }
+        }
+        /* Responsive font sizes */
         @media (max-width: 640px) {
             html { font-size: 14px; }
-            #airQualityData {
-                grid-template-columns: 1fr;
-            }
         }
         @media (min-width: 641px) and (max-width: 1024px) {
             html { font-size: 16px; }
-            #airQualityData {
-                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            }
         }
         @media (min-width: 1025px) {
             html { font-size: 18px; }
